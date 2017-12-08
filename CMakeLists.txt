@@ -4,7 +4,9 @@ project(OSGQQuick)
 set(PROJECT_NAME OSGQQuick)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 # 设置输出路径，区分32、64
 set(OUTPUT_BINDIR ${CMAKE_SOURCE_DIR}/bin)
@@ -14,10 +16,10 @@ set(OUTPUT_LIBDIR ${CMAKE_SOURCE_DIR}/lib)
 
 # 对每一个平台，设置其输出路径
 foreach(CONF ${CMAKE_CONFIGURATION_TYPES})
-	#string(TOUPPER "${CONF}" CONF_UC)
-	set("CMAKE_ARCHIVE_OUTPUT_DIRECTORY" ${OUTPUT_LIBDIR})
-	set("CMAKE_RUNTIME_OUTPUT_DIRECTORY" ${OUTPUT_BINDIR})
-	set("CMAKE_LIBRARY_OUTPUT_DIRECTORY" "${OUTPUT_BINDIR}")
+	string(TOUPPER "${CONF}" CONF_UC)
+	set("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF_UC}" ${OUTPUT_LIBDIR})
+	set("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF_UC}" ${OUTPUT_BINDIR})
+	set("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF_UC}" "${OUTPUT_BINDIR}")
 endforeach()
 
 # Debug库输出带d,Release不带
@@ -39,37 +41,33 @@ if(NOT OSGDIR)
 	message(FATAL_ERROR "OSGDIR variable is not set appropriate!")
 endif()
 
-find_package(Qt5Core)
-find_package(Qt5Quick)
+find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 
 
 # 添加文件
 set(headers
-
+		OSGItem.h
 	 )
 
 set(qmls
     main.qml
-    MainForm.ui.qml
 	 )
 
 set(sources
       main.cpp
-
+			InputLib.cpp
+			OSGItem.cpp
 	 )
 
 set(qrcs
     qml.qrc
    )
 
-# Qt warp files
-qt5_wrap_cpp(Headers_Moc ${headers})
-
-# 设置工程过滤器
-source_group("Header Files" FILES ${headers})
-source_group("Qml Files" FILES ${qmls})
-source_group("Resource Files" FILES ${qrcs})
-source_group("Generated Files" FILES ${Forms_Ui} ${Headers_Moc})
+	 # 设置工程过滤器
+	 source_group("Header Files" FILES ${headers})
+	 source_group("Qml Files" FILES ${qmls})
+	 source_group("Resource Files" FILES ${qrcs})
+	 source_group("Generated Files" FILES ${Headers_Moc})
 
 # 设置第三方头文件与链接库的路径
 include_directories(
