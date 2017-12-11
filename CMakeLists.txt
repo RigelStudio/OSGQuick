@@ -47,6 +47,8 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 # 添加文件
 set(headers
 		OSGItem.h
+		OSGRender.h
+		RigelOSG.h
 	 )
 
 set(qmls
@@ -57,6 +59,8 @@ set(sources
       main.cpp
 			InputLib.cpp
 			OSGItem.cpp
+			OSGRender.cpp
+			RigelOSG.cpp
 	 )
 
 set(qrcs

@@ -1,5 +1,5 @@
 #pragma once
-#include <QQuickItem>
+#include <QQuickFramebufferObject>
 #include <osg/Group>
 #include <osg/Camera>
 #include <osgViewer/Viewer>
@@ -7,35 +7,38 @@
 #include <QSGDynamicTexture>
 #include <QOpenGLFramebufferObject>
 
-class OSGItem : public QQuickItem
+class OSGItem : public QQuickFramebufferObject
 {
 	Q_OBJECT
 public:
-	OSGItem(QQuickItem *parent = Q_NULLPTR);
-	virtual ~OSGItem();
+    OSGItem(QQuickItem *parent = Q_NULLPTR);
+    virtual ~OSGItem();
+public:
+	osg::Camera* getCamera();
 
-public slots:
-	Q_INVOKABLE  void slotExe();
+    osgViewer::Viewer* getViewer();
+
+    osg::Group* getSceneData();
 
 protected:
+    virtual QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *uppData);
+    /***浜嬩欢澶勭悊***/
+	void mousePressEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
+	void mouseDoubleClickEvent(QMouseEvent *event);
+	void wheelEvent(QWheelEvent *event);
+	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+	void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void timerEvent(QTimerEvent *event);
-
-
-	virtual QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *uppData);
+	Renderer* createRenderer() const;
 
 private:
 	void initOSG();
-
-	void updateFBO();
 
 private:
 	osg::Group* m_pRoot;
 	osg::Camera* m_pCamera;
 	osgViewer::Viewer* m_pViewer;
-	osgViewer::GraphicsWindow* m_pGraphicsWindow;	//osg的图形上下文
-
-	QSGTexture* m_pQtTexture;
-	QOpenGLFramebufferObject* m_pQtFBO;
-	QSGSimpleTextureNode* m_pQtTextureNode;
+	osgViewer::GraphicsWindow* m_pGraphWindow;
 };
-
