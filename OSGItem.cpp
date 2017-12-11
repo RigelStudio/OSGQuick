@@ -11,6 +11,7 @@
 OSGItem::OSGItem(QQuickItem *parent/* = Q_NULLPTR*/)
 	:QQuickFramebufferObject(parent)
 {
+	std::cout << "OSGItem::OSGItem()" << std::endl;
 	m_pRoot = nullptr;
 	m_pCamera = nullptr;
 	m_pViewer = nullptr;
@@ -42,8 +43,17 @@ osg::Group* OSGItem::getSceneData()
 	return m_pRoot;
 }
 
+void OSGItem::slotHome()
+{
+	m_pCamera->setViewport(new osg::Viewport(0, 0, width(), height()));
+	const double aspectRatio = static_cast<double>(width()) / static_cast<double>(height());
+	m_pCamera->setProjectionMatrixAsPerspective(30.0f, aspectRatio, 1.0f, 10000.0f);
+	m_pViewer->home();
+}
+
 QQuickFramebufferObject::Renderer* OSGItem::createRenderer() const
 {
+	std::cout << "OSGItem::createRenderer()" << std::endl;
 	return new OSGRender(m_pViewer);
 }
 
@@ -55,14 +65,16 @@ void OSGItem::initOSG()
 	m_pRoot->addChild(node);
 	m_pViewer->setSceneData(m_pRoot);
 	m_pCamera = m_pViewer->getCamera();
-
+	
 	m_pViewer->setCameraManipulator(new osgGA::TrackballManipulator);
 	m_pViewer->addEventHandler(new osgViewer::StatsHandler);
 	m_pViewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
 
-	auto context = m_pViewer->setUpViewerAsEmbeddedInWindow(0, 0, width(), height());
+	auto context = m_pViewer->setUpViewerAsEmbeddedInWindow(0, 0, 640, 480);
 	m_pViewer->getEventQueue()->setGraphicsContext(context);
+	
 	m_pGraphWindow = dynamic_cast<osgViewer::GraphicsWindow*>(context);
+
 	startTimer(16);
 }
 
@@ -83,48 +95,22 @@ QSGNode * OSGItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *nodeDa
 
 void OSGItem::mousePressEvent(QMouseEvent *event)
 {
-	int button = 0;
-	switch (event->button())
-	{
-	case Qt::LeftButton: button = 1; break;
-	case Qt::MidButton: button = 2; break;
-	case Qt::RightButton: button = 3; break;
-	case Qt::NoButton: button = 0; break;
-	default: button = 0; break;
-	}
 	m_pGraphWindow->getEventQueue()->mouseButtonPress(event->x(), event->y(), event->button());
 }
 
 void OSGItem::mouseMoveEvent(QMouseEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->mouseMotion(event->x(), event->y());
+	update();
 }
 
 void OSGItem::mouseReleaseEvent(QMouseEvent *event)
 {
-	int button = 0;
-	switch (event->button())
-	{
-	case Qt::LeftButton: button = 1; break;
-	case Qt::MidButton: button = 2; break;
-	case Qt::RightButton: button = 3; break;
-	case Qt::NoButton: button = 0; break;
-	default: button = 0; break;
-	}
 	m_pGraphWindow->getEventQueue()->mouseButtonRelease(event->x(), event->y(), event->button());
 }
 
 void OSGItem::mouseDoubleClickEvent(QMouseEvent *event)
 {
-	int button = 0;
-	switch (event->button())
-	{
-	case Qt::LeftButton: button = 1; break;
-	case Qt::MidButton: button = 2; break;
-	case Qt::RightButton: button = 3; break;
-	case Qt::NoButton: button = 0; break;
-	default: button = 0; break;
-	}
 	m_pGraphWindow->getEventQueue()->mouseDoubleButtonPress(event->x(), event->y(), event->button());
 }
 
@@ -150,6 +136,6 @@ void OSGItem::keyReleaseEvent(QKeyEvent *event)
 
 void OSGItem::timerEvent(QTimerEvent *event)
 {
-	
+	//update();
 }
 
