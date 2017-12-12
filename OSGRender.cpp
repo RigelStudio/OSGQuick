@@ -19,10 +19,6 @@ OSGRender::~OSGRender()
 
 QOpenGLFramebufferObject * OSGRender::createFramebufferObject(const QSize &size)
 {
-	std::cout << "OSGRender::createFramebufferObject()" << std::endl;
-	m_pViewer->getCamera()->setViewport(0, 0, size.width(), size.height());
-	m_pViewer->getEventQueue()->windowResize(0, 0, size.width(), size.height());
-
 	QOpenGLFramebufferObjectFormat format;
 	format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
 	format.setSamples(4);
@@ -32,13 +28,16 @@ QOpenGLFramebufferObject * OSGRender::createFramebufferObject(const QSize &size)
 
 void OSGRender::render()
 {
-	std::cout << "OSGRender::render()" << std::endl;
+	std::cout << "render" << std::endl;
 	QOpenGLContext::currentContext()->functions()->glUseProgram(0);
 	if (m_pViewer->isRealized())
 	{
 		m_pViewer->realize();
 	}
-	m_pViewer->frame();
-	
 }
 
+void OSGRender::synchronize(QQuickFramebufferObject *item)
+{
+	std::cout << "synchronize" << std::endl;
+	m_pViewer->frame();
+}

@@ -25,6 +25,8 @@ public slots:
 
 protected:
     virtual QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *uppData);
+	void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
+
     /***事件处理***/
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);

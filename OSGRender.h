@@ -13,6 +13,8 @@ public:
 
 	virtual void render();
 
+	void synchronize(QQuickFramebufferObject *item);
+
 private:
 	osg::observer_ptr<osgViewer::Viewer> m_pViewer;
 };

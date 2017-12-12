@@ -45,9 +45,6 @@ osg::Group* OSGItem::getSceneData()
 
 void OSGItem::slotHome()
 {
-	m_pCamera->setViewport(new osg::Viewport(0, 0, width(), height()));
-	const double aspectRatio = static_cast<double>(width()) / static_cast<double>(height());
-	m_pCamera->setProjectionMatrixAsPerspective(30.0f, aspectRatio, 1.0f, 10000.0f);
 	m_pViewer->home();
 }
 
@@ -75,11 +72,12 @@ void OSGItem::initOSG()
 	
 	m_pGraphWindow = dynamic_cast<osgViewer::GraphicsWindow*>(context);
 
-	startTimer(16);
+	startTimer(1000);
 }
 
 QSGNode * OSGItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *nodeData)
 {
+	std::cout << "OSGItem::updatePaintNode()" << std::endl;
 	if(nullptr == oldNode) 
 	{
 		oldNode = QQuickFramebufferObject::updatePaintNode(oldNode, nodeData);
@@ -90,7 +88,18 @@ QSGNode * OSGItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *nodeDa
 		}
 		return oldNode;
 	}
-	return QQuickFramebufferObject::updatePaintNode(oldNode, nodeData);
+	return oldNode;
+	//return QQuickFramebufferObject::updatePaintNode(oldNode, nodeData);
+}
+
+void OSGItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+{
+	m_pGraphWindow->getEventQueue()->windowResize(newGeometry.x(), newGeometry.y(), newGeometry.width(), newGeometry.height());
+	m_pCamera->setViewport(new osg::Viewport(0, 0, newGeometry.width(), newGeometry.height()));
+	const double aspectRatio = newGeometry.width() / newGeometry.height();
+	m_pCamera->setProjectionMatrixAsPerspective(30.0f, aspectRatio, 1.0f, 10000.0f);
+	QQuickFramebufferObject::geometryChanged(newGeometry, oldGeometry);
+	update();
 }
 
 void OSGItem::mousePressEvent(QMouseEvent *event)
@@ -107,11 +116,13 @@ void OSGItem::mouseMoveEvent(QMouseEvent *event)
 void OSGItem::mouseReleaseEvent(QMouseEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->mouseButtonRelease(event->x(), event->y(), event->button());
+	update();
 }
 
 void OSGItem::mouseDoubleClickEvent(QMouseEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->mouseDoubleButtonPress(event->x(), event->y(), event->button());
+	update();
 }
 
 void OSGItem::wheelEvent(QWheelEvent *event)
@@ -120,22 +131,25 @@ void OSGItem::wheelEvent(QWheelEvent *event)
 		event->orientation() == Qt::Vertical ?
 		(event->delta() > 0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN) :
 		(event->delta() > 0 ? osgGA::GUIEventAdapter::SCROLL_LEFT : osgGA::GUIEventAdapter::SCROLL_RIGHT));
+	update();
 }
 
 void OSGItem::keyPressEvent(QKeyEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->keyPress(
 		(osgGA::GUIEventAdapter::KeySymbol)*(event->text().toLatin1().data()));
+	update();
 }
 
 void OSGItem::keyReleaseEvent(QKeyEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->keyPress(
 		(osgGA::GUIEventAdapter::KeySymbol)*(event->text().toLatin1().data()));
+	update();
 }
 
 void OSGItem::timerEvent(QTimerEvent *event)
 {
-	//update();
+	QQuickFramebufferObject::update();
 }
 
