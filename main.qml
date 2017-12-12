@@ -12,14 +12,15 @@ Window {
     title: qsTr("Hello World");
 	OSGItem{
         id:rect;
+		width: 640;
+		height: 480;
         anchors.fill: parent;
-        Layout.fillWidth: true;
-		Layout.fillHeight: true;
-		
     }
-	/*MouseArea {
+	MouseArea {
             anchors.fill: parent;
+			onPressed:rect.slotHome();
         }
+	/*
 	GridLayout{
         id: gridLayout;
         anchors.fill: parent;
