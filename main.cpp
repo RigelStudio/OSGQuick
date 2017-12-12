@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include "OSGItem.h"
-#include <QSurfaceFormat>
+
 
 int main(int argc, char *argv[])
 {
