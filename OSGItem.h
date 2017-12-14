@@ -35,7 +35,6 @@ protected:
 	void wheelEvent(QWheelEvent *event);
 	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-	void timerEvent(QTimerEvent *event);
 
 	Renderer* createRenderer() const;
 
@@ -43,6 +42,7 @@ private:
 	void initOSG();
 
 private:
+	OSGItem* m_pOSGItem;
 	osg::Group* m_pRoot;
 	osg::Camera* m_pCamera;
 	osgViewer::Viewer* m_pViewer;
