@@ -11,17 +11,10 @@ Window {
     height: 480;
 	color: "red";
     title: qsTr("Hello World");
-	GridLayout
+	OSGItem
 	{
-        id: gridLayout;
-        anchors.fill: parent;
-        anchors.margins: 10;
-		OSGItem
-		{
-			id:view;
-			anchors.fill: parent;
-			focus:true;
-			//
-		}
-    }
+		id:view;
+		anchors.fill: parent;
+		focus:true;
+	}
 }

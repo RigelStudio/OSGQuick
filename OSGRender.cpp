@@ -34,6 +34,6 @@ void OSGRender::render()
 		m_pViewer->realize();
 	}
 	m_pViewer->frame();
-	//update();
+	update();
 }
 

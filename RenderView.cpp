@@ -66,6 +66,7 @@ public:
             _viewer->frame();
             
         }
+		update();
     }
 
     virtual QOpenGLFramebufferObject* createFramebufferObject(const QSize &size) Q_DECL_OVERRIDE

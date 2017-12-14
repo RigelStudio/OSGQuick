@@ -18,6 +18,7 @@ OSGItem::OSGItem(QQuickItem *parent/* = Q_NULLPTR*/)
 	m_pGraphWindow = nullptr;
 	setFlag(ItemHasContents, true);
 	setAcceptedMouseButtons(Qt::AllButtons);
+	
 	//setTextureFollowsItemSize(true);
 	initOSG();
 }
@@ -67,8 +68,8 @@ void OSGItem::initOSG()
 	m_pViewer->addEventHandler(new osgViewer::StatsHandler());
 	m_pViewer->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
 
-	auto context = m_pViewer->setUpViewerAsEmbeddedInWindow(0, 0, 0, 0);
-	m_pCamera->setGraphicsContext(context);
+	auto context = m_pViewer->setUpViewerAsEmbeddedInWindow(0, 0, 1920, 1080);
+	//m_pCamera->setGraphicsContext(context);
 	m_pViewer->getEventQueue()->setGraphicsContext(context);
 	
 	m_pGraphWindow = dynamic_cast<osgViewer::GraphicsWindow*>(context);
@@ -100,14 +101,14 @@ void OSGItem::mousePressEvent(QMouseEvent *event)
 
 void OSGItem::mouseMoveEvent(QMouseEvent *event)
 {
-	m_pGraphWindow->getEventQueue()->mouseMotion(event->x(), event->y());
-	//update();
+	m_pGraphWindow->getEventQueue()->mouseMotion(event->x(), event->y(), event->button());
+	update();
 }
 
 void OSGItem::mouseReleaseEvent(QMouseEvent *event)
 {
 	m_pGraphWindow->getEventQueue()->mouseButtonRelease(event->x(), event->y(), event->button());
-	//update();
+	update();
 }
 
 void OSGItem::mouseDoubleClickEvent(QMouseEvent *event)
@@ -140,6 +141,5 @@ void OSGItem::keyReleaseEvent(QKeyEvent *event)
 		m_pGraphWindow->getEventQueue()->keyPress(text[0]);
 		update();
 	}
-	m_pViewer->home();
 }
 
