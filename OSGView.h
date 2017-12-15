@@ -6,7 +6,8 @@
 #include <QSGSimpleTextureNode>
 #include <QSGDynamicTexture>
 #include <QOpenGLFramebufferObject>
-#include "OSGRender.h"
+
+class OSGRender;
 
 class OSGView : public QQuickFramebufferObject
 {

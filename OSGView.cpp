@@ -5,7 +5,44 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
-#include "RigelOSG.h"
+
+class OSGRender : public QQuickFramebufferObject::Renderer
+{
+public:
+	OSGRender::OSGRender(const OSGView* view)
+		: m_pViewer(view->m_pViewer)
+	{
+		m_pOSGView = view;
+		std::cout << "OSGRender::OSGRender()" << std::endl;
+	}
+	~OSGRender() {};
+
+	QOpenGLFramebufferObject *OSGRender::createFramebufferObject(const QSize &size)
+	{
+		QOpenGLFramebufferObjectFormat format;
+		format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+		//format.setSamples(8);
+		return new QOpenGLFramebufferObject(size, format);
+	}
+
+	void OSGRender::render()
+	{
+		QOpenGLContext::currentContext()->functions()->glUseProgram(0);
+		osgGA::EventQueue::Events events;
+		m_pOSGView->m_pEventQueue->takeEvents(events);
+		if (events.size() > 0)
+		{
+			m_pOSGView->m_pViewer->getEventQueue()->appendEvents(events);
+		}
+		m_pOSGView->m_pViewer->frame();
+		update();
+	}
+
+private:
+	const OSGView* m_pOSGView;
+	osg::observer_ptr<osgViewer::Viewer> m_pViewer;
+};
+
 
 OSGView::OSGView(QQuickItem *parent/* = Q_NULLPTR*/)
 	:QQuickFramebufferObject(parent)
