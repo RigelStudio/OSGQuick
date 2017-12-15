@@ -1,17 +1,16 @@
 import QtQuick 2.6
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.1
-import OSGQuick.OSGItem 1.0
-import OSGQuick.RenderView 1.0
+import OSGQuick.OSGView 1.0
 
 Window {
 	id:mainWindow;
     visible: true;
     width: 640;
     height: 480;
-	color: "red";
-    title: qsTr("Hello World");
-	OSGItem
+	color: "black";
+    title: qsTr("OSG嵌入QQuick");
+	OSGView
 	{
 		id:view;
 		anchors.fill: parent;

@@ -46,10 +46,8 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 
 # 娣诲姞鏂囦欢
 set(headers
-		OSGItem.h
+		OSGView.h
 		OSGRender.h
-		RigelOSG.h
-		RenderView.h
 	 )
 
 set(qmls
@@ -59,10 +57,8 @@ set(qmls
 set(sources
       main.cpp
 			InputLib.cpp
-			OSGItem.cpp
+			OSGView.cpp
 			OSGRender.cpp
-			RigelOSG.cpp
-			RenderView.cpp
 	 )
 
 set(qrcs
@@ -83,6 +79,8 @@ include_directories(
 link_directories(
 	${OSGDIR}/lib
 )
+
+add_definitions(-DUNICODE -D_UNICODE)
 
 add_executable(${PROJECT_NAME} ${headers} ${sources} ${qrcs} ${qmls})
 

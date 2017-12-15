@@ -6,13 +6,14 @@
 #include <QSGSimpleTextureNode>
 #include <QSGDynamicTexture>
 #include <QOpenGLFramebufferObject>
+#include "OSGRender.h"
 
-class OSGItem : public QQuickFramebufferObject
+class OSGView : public QQuickFramebufferObject
 {
 	Q_OBJECT
 public:
-    OSGItem(QQuickItem *parent = Q_NULLPTR);
-    virtual ~OSGItem();
+    OSGView(QQuickItem *parent = Q_NULLPTR);
+    virtual ~OSGView();
 public:
 	osg::Camera* getCamera();
 
@@ -33,8 +34,8 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void wheelEvent(QWheelEvent *event);
-	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-	void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+	void keyPressEvent(QKeyEvent *event);
+	void keyReleaseEvent(QKeyEvent *event);
 
 	Renderer* createRenderer() const;
 
@@ -42,9 +43,10 @@ private:
 	void initOSG();
 
 private:
-	OSGItem* m_pOSGItem;
+	friend class OSGRender;
+	OSGView* m_pOSGItem;
 	osg::Group* m_pRoot;
 	osg::Camera* m_pCamera;
 	osgViewer::Viewer* m_pViewer;
-	osgViewer::GraphicsWindow* m_pGraphWindow;
+	osgGA::EventQueue* m_pEventQueue;
 };
